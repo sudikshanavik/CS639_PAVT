@@ -1,0 +1,179 @@
+﻿PROGRAM ANALYSIS VERIFICATION & TESTING
+CS 689A
+Assignment -2
+Completing a fuzzing loop
+
+
+Mutation-based fuzzing is a technique that generates fuzz inputs by applying small mutations to given inputs.
+
+worklist ← seedinputs
+2 t ← selectNextInput(worklist)1
+3 If t is new, result, cov ← Run(t)
+4 if result is a crash, declare t as Crashing Input
+5 if cov increases coverage, declare t as Interesting Inputandaddittoworklist
+6 e ← selectEnergy(t, result, cov)
+7 worklist ← worklist + mutate(t, e)
+8 Goto 2
+
+Objective: 
+
+We want to implement a custom mutation operator along with a coverage metric operator (this operator will determine if there is a change/improvement in coverage metric when a turtle program is executed with mutated inputs.) for the fuzzer loop in `fuzzSubmission.py` file.
+
+Implementation:
+Mainly 3 functions are to be implemented:
+
+    • def compareCoverage(curr_metric, total_metric)
+    • - def mutate(input_data) 
+    • - def updateTotalCoverage(curr_metric, total_metric)
+
+
+compareCoverage:
+Takes in two arguments: curr_metric and total_metric
+If curr_metric is subset of total_metric, return False as no extra coverage is obtained, Otherwise return True (Extra coverage gained and updateTotalCoverage will be called).
+
+UpdateTotalCoverage:
+Append any new statement covered in total_metric.
+
+mutate:
+Mutating the seed input in order to gain coverage. Mutating the seed input in order to gain coverage by generating random values using randrange function.
+
+
+TestCases:
+if :x <:y 
+[
+    right 45
+    forward 50 
+    if :y >50 
+    [
+        right 45
+        forward 50 
+        if :z <= 60
+        [
+            right 45
+            forward 50
+            left 90
+             if :y >750 
+   [
+        right 45
+        forward 50 
+        if :z <= 60
+        [
+            right 45
+            forward 50 
+        ]
+        
+    ]
+            backward 80
+            right45
+            forward 47 
+        ]
+        if :y <=750 
+        [
+             backward 80
+            right45
+            forward 47 
+        ]
+        
+    ]
+]
+if :x >= 70 
+[
+    right 45
+    forward 50 
+    if :y <50 
+    [
+        right 45
+        forward 50 
+        if :z > 60
+        [
+            right 45
+            forward 50 
+        ]
+        
+    ]
+]
+
+TestCase :2
+left 90
+if(:x>:y)[
+	if(:x>:z)[
+            if(:v>:u)[
+              right 145
+			  forward 66]
+			else[
+				right 145
+				backward 66]]
+	else[
+		if(:u>:v)[
+           left 45
+		   backward 66]
+		else[
+           left 145
+		   forward 66]]]
+else[
+	if(:y>:z)[
+		if(:v > :u)[
+           left 45
+		   backward 66]
+		else[
+           left 145
+		   forward 66]]
+	else[
+            if(:u>:v)[
+              right 90
+			  forward 90]
+			else[
+				right 145
+				backward 90]]]
+TestCase 3:
+pendown
+left 90
+:move = 90
+if(:x>:y)[
+    if(:y>:z)[
+        right 45
+        forward :move
+    ]else[
+        left 45
+        backward :move]]
+else[
+    if(:x>:z)[
+       left 45 
+       forward :move]
+    else[
+        right 45
+        backward :move]]
+TestCase 4:
+
+pendown
+if(:x<=:y)[
+   if(:x<10)[
+     if(:y>20)[
+        right 45
+        forward 50
+      ]else[
+        left 45
+        forward 50]
+]else[
+       backward 50
+
+]]else[
+      if(:y>10)[
+      right   90
+      forward 50
+]else[
+       left 90
+       forward 50]]
+
+TestCase 5:
+
+pendown
+left 90
+:move = 20
+	if(:x>100)[
+			forward :move
+			right 135]
+	else[
+			forward :move
+			left 135]
+
